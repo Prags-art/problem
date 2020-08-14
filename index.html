@@ -1,0 +1,144 @@
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Student Result Board</title>
+
+    <!-- INCLUDING JQUERY-->
+
+      <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.3.min.js"></script>
+
+
+    <!-- CSS FOR STYLING THE PAGE -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <section>
+        <h1><B>STUDENT RESULT BOARD</B></h1>
+
+        <!-- TABLE CONSTRUCTION-->
+        <table id='table'>
+            <!-- HEADING FORMATION -->
+            <tr>
+                <th><i>Name</i></th>
+                <th><i>Roll Number</i></th>
+                <th><i>Total Marks</i></th>
+                <th><i>Status</i></th>
+            </tr>
+
+            <script>
+                var data =
+                [
+                	{
+                		"name": "rajiv",
+                		"marks": {
+                			"Maths": 18,
+                			"English": 21,
+                			"Science": 45
+                		},
+                		"rollNumber": "KV2017-5A2"
+                	},
+                	{
+                		"name": "abhishek",
+                		"marks": {
+                			"Maths": 43,
+                			"English": 30,
+                			"Science": 37
+                		},
+                		"rollNumber": "KV2017-5A3"
+                	},
+                	{
+                		"name": "zoya",
+                		"marks": {
+                			"Maths": 42,
+                			"English": 31,
+                			"Science": 50
+                		},
+                		"rollNumber": "KV2017-5A1"
+                	}
+                ];
+
+                $(document).ready(function () {
+
+                    // FETCHING DATA FROM JSON FILE
+                    //$.getJSON("./studentdetails.json",
+                      //      function (data) {
+                        var student = '';
+
+                        // ITERATING THROUGH OBJECTS
+                        var studentList = [];
+                        var studentMap = new Map();
+                        var topperStudent = '';
+                        var topperMarks=0;
+                        $.each(data, function (key, value) {
+
+                            //CONSTRUCTION OF ROWS HAVING
+                            // DATA FROM JSON OBJECT
+
+                            studentList.push(value.name);
+                            var mat=value.marks.Maths;
+                            var sci=value.marks.Science;
+                            var eng=value.marks.English;
+                            var Total = mat+sci+eng;
+                            if(topperMarks<Total){
+                                topperMarks=Total;
+                                topperStudent=value.name;
+                            }
+
+                            var studentMapTemp = [];
+                            studentMapTemp.push(Total);
+                            studentMapTemp.push(value.rollNumber);
+                            if(mat<20||eng<20||sci<20)
+                                studentMapTemp.push(1);
+                            else
+                                studentMapTemp.push(0);
+                            studentMap[value.name] = studentMapTemp;
+                        });
+
+                        //INSERTING ROWS INTO TABLE
+                        studentList.sort();
+                        var xyz = '';
+
+                        $.each(studentList, function (i, val) {
+                            xyz += '<tr>';
+                            var tname = val;
+                            var ttotal = studentMap[tname][0];
+                            var trollNumber = studentMap[tname][1];
+                            var tstatus = studentMap[tname][2];
+                            var pname = tname[0].toUpperCase() + tname.slice(1);
+                            if(tstatus==1){
+                                xyz += '<td style="color: red;">' + pname + '</td>';
+                                xyz += '<td style="color: red;">' + trollNumber + '</td>';
+                                xyz += '<td style="color: red;">' + ttotal + '</td>';
+                                xyz += '<td style="color: red;">Fail'+'</td>';
+                                xyz += '</tr>';
+                            }
+                            else if(tname==topperStudent){
+                                xyz += '<td style="color: green;">' + pname + '</td>';
+                                xyz += '<td style="color: green;">' + trollNumber + '</td>';
+                                xyz += '<td style="color: green;">' + ttotal + '</td>';
+                                xyz += '<td style="color: green;">Topper'+ '</td>';
+                                xyz += '</tr>';
+                            }
+                            else{
+                                xyz += '<td>' + pname + '</td>';
+                                xyz += '<td>' + trollNumber + '</td>';
+                                xyz += '<td>' + ttotal + '</td>';
+                                xyz += '<td>Pass'+ '</td>';
+                                xyz += '</tr>';
+
+                            }
+                        });
+
+                        $('#table').append(xyz);
+                    //});
+                });
+            </script>
+    </section>
+
+
+</body>
+
+</html>
